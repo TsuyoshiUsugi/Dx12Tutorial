@@ -40,6 +40,17 @@ LRESULT WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 int main() {
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+	WNDCLASS w = {};	//ウインドウクラスの生成と登録
+
+	w.cbSize = sizeof(WNDCLASSEX);
+	w.lpfnWndProc = (WNDPROC)WindowProcedure;	//コールバック関数の指定
+	w.lpszClassName = _T("DX12Sample");			//アプリケーションクラス名
+	w.hInstance = GetModuleHandle(nullptr);		//ハンドルの取得
+
+	RegisterClassEx(&w);	//ウィンドウクラスの指定をOSに伝える
+
+	RECT wrc = { 0, 0, window_width, window_height };	//ウィンドウサイズを決める
+
 #endif
 	DebugOutputFormatString("Show window test.");
 	getchar();
