@@ -41,6 +41,8 @@ LRESULT WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 int main() 
 {
 	WNDCLASSEX w = {};	//ウインドウクラスの生成と登録
+	int window_width = 480;
+	int window_height = 270;
 
 	w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = (WNDPROC)WindowProcedure;	//コールバック関数の指定
@@ -66,6 +68,23 @@ int main()
 		nullptr);				//追加パラメータ
 
 	ShowWindow(hwnd, SW_SHOW);
+
+	MSG msg = {};
+
+	while (true)
+	{
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+		if (msg.message == WM_QUIT)
+		{
+			break;
+		}
+	}
+
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
