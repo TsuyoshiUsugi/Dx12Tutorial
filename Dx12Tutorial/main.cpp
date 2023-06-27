@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include <tchar.h>
 #ifdef _DEBUG
 #include <iostream>
 #endif // _DEBUG
@@ -37,10 +38,9 @@ LRESULT WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 }
 
 #ifdef _DEBUG
-int main() {
-#else
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-	WNDCLASS w = {};	//ウインドウクラスの生成と登録
+int main() 
+{
+	WNDCLASSEX w = {};	//ウインドウクラスの生成と登録
 
 	w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = (WNDPROC)WindowProcedure;	//コールバック関数の指定
@@ -50,6 +50,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	RegisterClassEx(&w);	//ウィンドウクラスの指定をOSに伝える
 
 	RECT wrc = { 0, 0, window_width, window_height };	//ウィンドウサイズを決める
+
+	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);		//ウィンドウのサイズを補正する
+
+	HWND hwnd = CreateWindow(w.lpszClassName,	//クラス名指定
+		_T("DX12テスト"),		//タイトルバーの指定
+		WS_OVERLAPPEDWINDOW,	//タイトルバーと境界線があるウィンドウ
+		CW_USEDEFAULT,			//表示座標XはOSに任せる
+		CW_USEDEFAULT,			//表示座標YはOSに任せる
+		wrc.right - wrc.left,	//ウィンドウ幅
+		wrc.bottom - wrc.top,	//ウィンドウ高
+		nullptr,				//親ウィンドウハンドル
+		nullptr,				//メニューハンドル
+		w.hInstance,			//呼び出しアプリケーションハンドル
+		nullptr);				//追加パラメータ
+
+	ShowWindow(hwnd, SW_SHOW);
+#else
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 #endif
 	DebugOutputFormatString("Show window test.");
