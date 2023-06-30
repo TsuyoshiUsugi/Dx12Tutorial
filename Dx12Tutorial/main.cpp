@@ -1,8 +1,13 @@
 #include <Windows.h>
-#include <tchar.h>
+#include <tchar.h>	//これないとエラーが出る？
+#include <d3d12.h>
+#include <dxgi1_6.h>
 #ifdef _DEBUG
 #include <iostream>
 #endif // _DEBUG
+
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dxgi.lib")
 
 using namespace std;
 
