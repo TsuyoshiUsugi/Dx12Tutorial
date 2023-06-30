@@ -5,7 +5,6 @@
 #ifdef _DEBUG
 #include <iostream>
 #endif // _DEBUG
-
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
@@ -41,6 +40,18 @@ LRESULT WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	}
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
+
+ID3D12Device* _dev = nullptr;
+IDXGIFactory6* _dxgiFactory = nullptr;
+IDXGISwapChain4* _swapchain = nullptr;
+
+//デバイスオブジェクトを作る
+HRESULT D3D12CreateDevice(
+	IUnknown* pAdapter,
+	D3D_FEATURE_LEVEL MinimumFeatureLevel,
+	REFIID            riid,
+	void** ppDevice
+);
 
 #ifdef _DEBUG
 int main() 
@@ -90,8 +101,29 @@ int main()
 		}
 	}
 
+	D3D_FEATURE_LEVEL levels[] = {
+		D3D_FEATURE_LEVEL_12_1,
+		D3D_FEATURE_LEVEL_12_0,
+		D3D_FEATURE_LEVEL_11_1,
+		D3D_FEATURE_LEVEL_11_0,
+	};
+
+	D3D_FEATURE_LEVEL featureLevel;
+
+	for (auto lv : levels)
+	{
+		if (D3D12CreateDevice(nullptr, lv, IID_PPV_ARGS(&_dev)) == S_OK)
+		{
+			featureLevel = lv;
+			break;
+		}
+	}
+
+
+
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+	
 
 #endif
 	DebugOutputFormatString("Show window test.");
