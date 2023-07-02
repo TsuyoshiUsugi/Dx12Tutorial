@@ -11,6 +11,10 @@
 
 using namespace std;
 
+ID3D12Device* _dev = nullptr;
+IDXGIFactory6* _dxgiFactory = nullptr;
+IDXGISwapChain4* _swapchain = nullptr;
+
 /// <summary>
 /// コンソール画面にフォーマット付き文字列を表示する
 /// デバック時にしか動かない
@@ -76,22 +80,9 @@ int main()
 
 	MSG msg = {};
 
-	while (true) {
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+	
 
-		if (msg.message == WM_QUIT) {
-			break;
-		}
-	}
 
-	UnregisterClass(w.lpszClassName, w.hInstance);
-
-	ID3D12Device* _dev = nullptr;
-	IDXGIFactory6* _dxgiFactory = nullptr;
-	IDXGISwapChain4* _swapchain = nullptr;
 
 	D3D_FEATURE_LEVEL levels[] = {
 		D3D_FEATURE_LEVEL_12_1,
@@ -132,10 +123,23 @@ int main()
 
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-	
 
 #endif
 	DebugOutputFormatString("Show window test.");
 	getchar();
+
+	while (true) {
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+		if (msg.message == WM_QUIT) {
+			break;
+		}
+	}
+
+	UnregisterClass(w.lpszClassName, w.hInstance);
+
 	return 0;
 }
