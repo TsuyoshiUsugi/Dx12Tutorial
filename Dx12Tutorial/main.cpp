@@ -1,10 +1,10 @@
 #include <Windows.h>
 #include <tchar.h>	//これないとエラーが出る？
-#include <d3d12.h>
-#include <dxgi1_6.h>
 #ifdef _DEBUG
 #include <iostream>
 #endif // _DEBUG
+#include <d3d12.h>
+#include <dxgi1_6.h>
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
@@ -40,18 +40,6 @@ LRESULT WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	}
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
-
-ID3D12Device* _dev = nullptr;
-IDXGIFactory6* _dxgiFactory = nullptr;
-IDXGISwapChain4* _swapchain = nullptr;
-
-//デバイスオブジェクトを作る
-HRESULT D3D12CreateDevice(
-	IUnknown* pAdapter,
-	D3D_FEATURE_LEVEL MinimumFeatureLevel,
-	REFIID            riid,
-	void** ppDevice
-);
 
 #ifdef _DEBUG
 int main() 
@@ -100,6 +88,12 @@ int main()
 			break;
 		}
 	}
+
+	UnregisterClass(w.lpszClassName, w.hInstance);
+
+	ID3D12Device* _dev = nullptr;
+	IDXGIFactory6* _dxgiFactory = nullptr;
+	IDXGISwapChain4* _swapchain = nullptr;
 
 	D3D_FEATURE_LEVEL levels[] = {
 		D3D_FEATURE_LEVEL_12_1,
