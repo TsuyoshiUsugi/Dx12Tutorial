@@ -11,10 +11,6 @@
 
 using namespace std;
 
-ID3D12Device* _dev = nullptr;
-IDXGIFactory6* _dxgiFactory = nullptr;
-IDXGISwapChain4* _swapchain = nullptr;
-
 /// <summary>
 /// コンソール画面にフォーマット付き文字列を表示する
 /// デバック時にしか動かない
@@ -50,8 +46,8 @@ LRESULT WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 int main() 
 {
 	WNDCLASSEX w = {};	//ウインドウクラスの生成と登録
-	int window_width = 480;
-	int window_height = 270;
+	int window_width = 1280;
+	int window_height = 720;
 
 	w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = (WNDPROC)WindowProcedure;	//コールバック関数の指定
@@ -78,12 +74,6 @@ int main()
 
 	ShowWindow(hwnd, SW_SHOW);
 
-	MSG msg = {};
-
-	
-
-
-
 	D3D_FEATURE_LEVEL levels[] = {
 		D3D_FEATURE_LEVEL_12_1,
 		D3D_FEATURE_LEVEL_12_0,
@@ -92,6 +82,10 @@ int main()
 	};
 
 	D3D_FEATURE_LEVEL featureLevel;
+
+	ID3D12Device* _dev = nullptr;
+	IDXGIFactory6* _dxgiFactory = nullptr;
+	IDXGISwapChain4* _swapchain = nullptr;
 
 	for (auto lv : levels) {
 		if (D3D12CreateDevice(nullptr, lv, IID_PPV_ARGS(&_dev)) == S_OK) {
@@ -121,12 +115,31 @@ int main()
 		}
 	}
 
+	ID3D12CommandAllocator* _cmdAllocator = nullptr;
+	ID3D12GraphicsCommandList* _cmdList = nullptr;
+
+	result = _dev->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_cmdAllocator));
+	result = _dev->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _cmdAllocator, nullptr, IID_PPV_ARGS(&_cmdList));
+
+	ID3D12CommandQueue* _cmdQueue = nullptr;
+
+	D3D12_COMMAND_QUEUE_DESC cmdQueueDesc = {};
+
+	cmdQueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;		//タイムアウトなし？
+	cmdQueueDesc.NodeMask = 0;								//アダプターを一つしか使わない時は0
+	cmdQueueDesc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;	//プライオリティは特に指定なし
+	cmdQueueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;		//コマンドリストと合わせる
+
+	result = _dev->CreateCommandQueue(&cmdQueueDesc, IID_PPV_ARGS(&_cmdQueue));
+
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 #endif
 	DebugOutputFormatString("Show window test.");
 	getchar();
+
+	MSG msg = {};
 
 	while (true) {
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
