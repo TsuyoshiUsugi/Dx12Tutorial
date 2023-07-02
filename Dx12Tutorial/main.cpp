@@ -5,6 +5,7 @@
 #endif // _DEBUG
 #include <d3d12.h>
 #include <dxgi1_6.h>
+#include <vector>
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
@@ -20,7 +21,7 @@ void DebugOutputFormatString(const char* format, ...) {
 #ifdef _DEBUG
 	va_list valist;
 	va_start(valist, format);
-	printf(format, valist);
+	vprintf(format, valist);
 	va_end(valist);
 #endif // _DEBUG
 }
@@ -75,16 +76,13 @@ int main()
 
 	MSG msg = {};
 
-	while (true)
-	{
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
+	while (true) {
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
 
-		if (msg.message == WM_QUIT)
-		{
+		if (msg.message == WM_QUIT) {
 			break;
 		}
 	}
@@ -104,16 +102,33 @@ int main()
 
 	D3D_FEATURE_LEVEL featureLevel;
 
-	for (auto lv : levels)
-	{
-		if (D3D12CreateDevice(nullptr, lv, IID_PPV_ARGS(&_dev)) == S_OK)
-		{
+	for (auto lv : levels) {
+		if (D3D12CreateDevice(nullptr, lv, IID_PPV_ARGS(&_dev)) == S_OK) {
 			featureLevel = lv;
 			break;
 		}
 	}
 
+	auto result = CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory));
+	std::vector <IDXGIAdapter*> adapters;	//利用可能なアダプターを列挙し格納する変数
 
+	IDXGIAdapter* tmpAdapter = nullptr;		//特定の名前を持つアダプターオブジェクトが入る
+
+	for (int i = 0; _dxgiFactory -> EnumAdapters(i, &tmpAdapter) != DXGI_ERROR_NOT_FOUND; ++i) {
+		adapters.push_back(tmpAdapter);
+	}
+
+	for ( auto adpt : adapters) {
+		DXGI_ADAPTER_DESC adesc = {};
+		adpt->GetDesc(&adesc);		//アダプターの説明オブジェクト取得
+
+		std::wstring strDesc = adesc.Description;
+
+		if (strDesc.find(L"NVIDIA0") != std::string::npos) {	//探したいアダプターの名前を取得(ここではNVIDIAで確定されているが実際は起動オプションで選べるといい)
+			tmpAdapter = adpt;
+			break;
+		}
+	}
 
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
