@@ -144,10 +144,14 @@ int main()
 	swapchainDesc.BufferCount = 2;
 
 	swapchainDesc.Scaling = DXGI_SCALING_STRETCH;	//バックバッファーは伸び縮み可能
-	swapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;	
 	swapchainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 	swapchainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
+	
+	result = _dxgiFactory->CreateSwapChainForHwnd(
+		_cmdQueue, hwnd,
+		&swapchainDesc, nullptr, nullptr,
+		(IDXGISwapChain1**)& _swapchain);
 
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
