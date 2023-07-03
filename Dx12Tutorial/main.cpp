@@ -153,6 +153,55 @@ int main()
 		&swapchainDesc, nullptr, nullptr,
 		(IDXGISwapChain1**)& _swapchain);
 
+	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
+
+	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	heapDesc.NodeMask = {};
+	heapDesc.NumDescriptors = 2;
+	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+
+	ID3D12DescriptorHeap* rtvHeaps = nullptr;
+
+	result = _dev->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&rtvHeaps));
+
+	DXGI_SWAP_CHAIN_DESC swcDesc = {};
+
+	result = _swapchain->GetDesc(&swcDesc);
+
+	std::vector<ID3D12Resource*> _backBuffers(swcDesc.BufferCount);
+	for (int idx = 0; idx < swcDesc.BufferCount; ++idx) {
+		result = _swapchain->GetBuffer(idx, IID_PPV_ARGS(&_backBuffers[idx]));
+
+		D3D12_CPU_DESCRIPTOR_HANDLE handle
+			= rtvHeaps->GetCPUDescriptorHandleForHeapStart();
+
+		handle.ptr += idx * _dev->GetDescriptorHandleIncrementSize(
+			D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+		_dev->CreateRenderTargetView(_backBuffers[idx], nullptr, handle);
+	}
+
+	result = _cmdAllocator->Reset();
+	auto bbIdx = _swapchain->GetCurrentBackBufferIndex();
+
+	auto rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
+	rtvH.ptr += bbIdx * _dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+	_cmdList->OMSetRenderTargets(1, &rtvH, true, nullptr);
+
+	float clearColor[] = { 1.0f, 1.0f, 0.0f, 1.0f }; //‰©F
+
+
+	_cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
+	_cmdList->Close();
+
+	ID3D12CommandList* cmdlists[] = {_cmdList};
+	_cmdQueue->ExecuteCommandLists(1, cmdlists);
+	_cmdAllocator->Reset();
+	_cmdList->Reset(_cmdAllocator, nullptr);
+
+	_swapchain->Present(1, 0);
+
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
