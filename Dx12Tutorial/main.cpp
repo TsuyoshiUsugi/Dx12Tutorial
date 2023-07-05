@@ -42,6 +42,15 @@ LRESULT WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
+void EnableDebugLayer()
+{
+	ID3D12Debug* debugLayer = nullptr;
+	auto result = D3D12GetDebugInterface(IID_PPV_ARGS(&debugLayer));
+
+	debugLayer->EnableDebugLayer();		//デバッグレイヤー有効化
+	debugLayer->Release();		//有効化したらインターフェース解放
+}
+
 #ifdef _DEBUG
 int main() 
 {
@@ -73,6 +82,11 @@ int main()
 		nullptr);				//追加パラメータ
 
 	ShowWindow(hwnd, SW_SHOW);
+
+#ifdef _DEBUG
+	//デバッグレイヤーをオンに
+	EnableDebugLayer();
+#endif
 
 	D3D_FEATURE_LEVEL levels[] = {
 		D3D_FEATURE_LEVEL_12_1,
