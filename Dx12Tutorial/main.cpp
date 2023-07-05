@@ -108,6 +108,12 @@ int main()
 		}
 	}
 
+#ifdef _DEBUG
+	CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(&_dxgiFactory));
+#else
+	CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory));
+#endif // _DEBUG
+
 	auto result = CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory));
 	std::vector <IDXGIAdapter*> adapters;	//利用可能なアダプターを列挙し格納する変数
 
