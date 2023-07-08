@@ -108,11 +108,9 @@ int main()
 		}
 	}
 
-#ifdef _DEBUG
-	CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(&_dxgiFactory));
-#else
-	CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory));
-#endif // _DEBUG
+	
+
+
 
 	auto result = CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory));
 	std::vector <IDXGIAdapter*> adapters;	//利用可能なアダプターを列挙し格納する変数
@@ -207,6 +205,20 @@ int main()
 	auto rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 	rtvH.ptr += bbIdx * _dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
+	D3D12_RESOURCE_BARRIER BarrierDesc = {};
+
+	BarrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;		//遷移
+	BarrierDesc.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;		//指定なし
+	BarrierDesc.Transition.pResource = _backBuffers[bbIdx];
+	BarrierDesc.Transition.Subresource = 0;
+
+	BarrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;		//直前はPresent状態
+	BarrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;		//今からレンダーターゲット状態
+
+	_cmdList->ResourceBarrier(1, &BarrierDesc);		//バリア指定実行
+
+
+
 	_cmdList->OMSetRenderTargets(1, &rtvH, true, nullptr);
 
 	float clearColor[] = { 1.0f, 1.0f, 0.0f, 1.0f }; //黄色
@@ -220,7 +232,36 @@ int main()
 	_cmdAllocator->Reset();
 	_cmdList->Reset(_cmdAllocator, nullptr);
 
+	BarrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	BarrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+
+	_cmdList->ResourceBarrier(1, &BarrierDesc);
+
 	_swapchain->Present(1, 0);
+
+	ID3D12Fence* _fence = nullptr;
+	UINT64 _fenceVal = 0;
+
+	result = _dev->CreateFence(_fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_fence));
+
+	_cmdQueue->Signal(_fence, ++_fenceVal);
+
+	if (_fence->GetCompletedValue() != _fenceVal)
+	{
+		auto event = CreateEvent(nullptr, false, false, nullptr);
+
+		_fence->SetEventOnCompletion(_fenceVal, event);
+
+		WaitForSingleObject(event, INFINITE);
+
+		CloseHandle(event);
+	}
+
+#ifdef _DEBUG
+	CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(&_dxgiFactory));
+#else
+	CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory));
+#endif // _DEBUG
 
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
