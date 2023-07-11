@@ -12,6 +12,7 @@
 #pragma comment(lib, "dxgi.lib")
 
 using namespace std;
+using namespace DirectX;
 
 /// <summary>
 /// コンソール画面にフォーマット付き文字列を表示する
@@ -257,6 +258,13 @@ int main()
 		WaitForSingleObject(event, INFINITE);
 
 		CloseHandle(event);
+	}
+
+	XMFLOAT3 vertices[] =
+	{
+		{-1.0f, -1.0f, 0.0f},	//左下
+		{-1.0f, 1.0f, 0.0f},	//左上
+		{1.0f, -1.0f, 0.0f},	//右下
 	}
 
 #ifdef _DEBUG
