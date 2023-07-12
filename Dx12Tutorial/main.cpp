@@ -294,6 +294,7 @@ int main()
 		nullptr,
 		IID_PPV_ARGS(&vertBuff));
 	
+	XMFLOAT3* vertmap = nullptr;
 
 #ifdef _DEBUG
 	CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(&_dxgiFactory));
