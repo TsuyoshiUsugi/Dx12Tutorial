@@ -295,6 +295,8 @@ int main()
 		IID_PPV_ARGS(&vertBuff));
 	
 	XMFLOAT3* vertmap = nullptr;
+	result = vertBuff->Map(0, nullptr, (void**)&vertmap);
+	std::copy(std::begin(vertices), std::end(vertices), vertmap);
 
 #ifdef _DEBUG
 	CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(&_dxgiFactory));
