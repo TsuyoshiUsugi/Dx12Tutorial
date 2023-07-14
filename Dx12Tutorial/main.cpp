@@ -297,6 +297,14 @@ int main()
 	XMFLOAT3* vertmap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertmap);
 	std::copy(std::begin(vertices), std::end(vertices), vertmap);
+	vertBuff->Unmap(0, nullptr);
+
+	D3D12_VERTEX_BUFFER_VIEW vbView = {};
+
+	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();	//バッファーの仮想アドレス
+	vbView.SizeInBytes = sizeof(vertices);						//全バイト数
+	vbView.StrideInBytes = sizeof(vertices[0]);					//1頂点辺りのバイト数
+
 
 #ifdef _DEBUG
 	CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(&_dxgiFactory));
