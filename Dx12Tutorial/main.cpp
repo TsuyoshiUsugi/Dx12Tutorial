@@ -1,12 +1,13 @@
 #include <Windows.h>
 #include <tchar.h>	//これないとエラーが出る？
-#ifdef _DEBUG
-#include <iostream>
-#endif // _DEBUG
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <vector>
+#include <string>
 #include <DirectXMath.h>
+#ifdef _DEBUG
+#include <iostream>
+#endif // _DEBUG
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -54,18 +55,26 @@ void EnableDebugLayer()
 	debugLayer->Release();		//有効化したらインターフェース解放
 }
 
+const unsigned int window_width = 1280;
+const unsigned int window_height = 720;
+ID3D12Device* _dev = nullptr;
+IDXGIFactory6* _dxgiFactory = nullptr;
+IDXGISwapChain4* _swapchain = nullptr;
+ID3D12CommandAllocator* _cmdAllocator = nullptr;
+ID3D12GraphicsCommandList* _cmdList = nullptr;
+ID3D12CommandQueue* _cmdQueue = nullptr;
+
 #ifdef _DEBUG
 int main() 
 {
-	WNDCLASSEX w = {};	//ウインドウクラスの生成と登録
-	int window_width = 1280;
-	int window_height = 720;
+	DebugOutputFormatString("Show window test.");
+	HINSTANCE hInst = GetModuleHandle(nullptr);
 
+	WNDCLASSEX w = {};	//ウインドウクラスの生成と登録
 	w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = (WNDPROC)WindowProcedure;	//コールバック関数の指定
 	w.lpszClassName = _T("DX12Sample");			//アプリケーションクラス名
-	w.hInstance = GetModuleHandle(nullptr);		//ハンドルの取得
-
+	w.hInstance = GetModuleHandle(0);		//ハンドルの取得
 	RegisterClassEx(&w);	//ウィンドウクラスの指定をOSに伝える
 
 	RECT wrc = { 0, 0, window_width, window_height };	//ウィンドウサイズを決める
@@ -97,13 +106,21 @@ int main()
 		D3D_FEATURE_LEVEL_11_1,
 		D3D_FEATURE_LEVEL_11_0,
 	};
+	HRESULT result = S_OK;
+	if (FAILED(CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(&dxgiFactory_)))) {
+		if (FAILED(CreateDXGIFactory2(0, IID_PPV_ARGS(&dxgiFactory_)))) {
+			return -1;
+		}
+	}
 
-	D3D_FEATURE_LEVEL featureLevel;
+	std::vector <IDXGIAdapter*> adapters;
+	IDXGIAdapter* tmpAdapter = nullptr;
+	for (int i = 0; i < _dxgiFactory->EnumAdapters(i, &tmpAdapter) != DXGI_ERROR_NOT_FOUND; i++)
+	{
+		adapters.push_back(tmpAdapter);
+	}
 
-	ID3D12Device* _dev = nullptr;
-	IDXGIFactory6* _dxgiFactory = nullptr;
-	IDXGISwapChain4* _swapchain = nullptr;
-
+	D3D_FEATURE_LEVEL featureLevel;		//Direct3Dデバイスの初期化
 	for (auto lv : levels) {
 		if (D3D12CreateDevice(nullptr, lv, IID_PPV_ARGS(&_dev)) == S_OK) {
 			featureLevel = lv;
@@ -136,13 +153,12 @@ int main()
 		}
 	}
 
-	ID3D12CommandAllocator* _cmdAllocator = nullptr;
-	ID3D12GraphicsCommandList* _cmdList = nullptr;
+	
 
 	result = _dev->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_cmdAllocator));
 	result = _dev->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _cmdAllocator, nullptr, IID_PPV_ARGS(&_cmdList));
 
-	ID3D12CommandQueue* _cmdQueue = nullptr;
+	
 
 	D3D12_COMMAND_QUEUE_DESC cmdQueueDesc = {};
 
@@ -316,7 +332,7 @@ int main()
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 #endif
-	DebugOutputFormatString("Show window test.");
+	
 	getchar();
 
 	MSG msg = {};
