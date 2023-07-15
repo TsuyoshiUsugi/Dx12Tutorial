@@ -1,0 +1,28 @@
+﻿2023/07/15 15:29:33 にビルドを開始しました。
+ログの詳細度は次のように設定されています: Normal。     1>ノード 2 上のプロジェクト "C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\Dx12Tutorial.vcxproj" (Build ターゲット)。
+     1>InitializeBuildStatus:
+         "Release\Dx12Tutorial.tlog\unsuccessfulbuild" のタッチ タスクを実行しています。
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\HostX86\x86\CL.exe /c /Zi /nologo /W3 /WX- /diagnostics:column /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /permissive- /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Release\\" /Fd"Release\vc142.pdb" /external:W3 /Gd /TP /analyze- /FC /errorReport:prompt main.cpp
+         main.cpp
+     1>C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\main.cpp(122,68): warning C4806: '!=': 安全でない演算: 'bool' 型から 'HRESULT' 型への上位変換を行うと与えられた定数に等しくなりません
+     1>C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\main.cpp(185,24): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+     1>C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\main.cpp(71): fatal error C1075: '{': 一致するトークンが見つかりませんでした
+     1>プロジェクト "C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\Dx12Tutorial.vcxproj" (Build ターゲット) のビルドが終了しました -- 失敗。
+
+ビルドに失敗しました。
+
+       "C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\Dx12Tutorial.vcxproj" (Build ターゲット) (1) ->
+       (ClCompile ターゲット) -> 
+         C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\main.cpp(122,68): warning C4806: '!=': 安全でない演算: 'bool' 型から 'HRESULT' 型への上位変換を行うと与えられた定数に等しくなりません
+         C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\main.cpp(185,24): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+
+
+       "C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\Dx12Tutorial.vcxproj" (Build ターゲット) (1) ->
+       (ClCompile ターゲット) -> 
+         C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\main.cpp(71): fatal error C1075: '{': 一致するトークンが見つかりませんでした
+
+    2 個の警告
+    1 エラー
+
+経過時間 00:00:01.34
