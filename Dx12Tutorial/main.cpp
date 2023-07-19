@@ -49,10 +49,10 @@ LRESULT WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 void EnableDebugLayer()
 {
 	ID3D12Debug* debugLayer = nullptr;
-	auto result = D3D12GetDebugInterface(IID_PPV_ARGS(&debugLayer));
-
-	debugLayer->EnableDebugLayer();		//デバッグレイヤー有効化
-	debugLayer->Release();		//有効化したらインターフェース解放
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugLayer)))) {
+		debugLayer->EnableDebugLayer();	//デバッグレイヤー有効化
+		debugLayer->Release();		//有効化したらインターフェース解放
+	}	
 }
 
 const unsigned int window_width = 1280;
@@ -257,9 +257,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		BarrierDesc.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;		//指定なし
 		BarrierDesc.Transition.pResource = _backBuffers[bbIdx];
 		BarrierDesc.Transition.Subresource = 0;
-
 		BarrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;		//直前はPresent状態
 		BarrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;		//今からレンダーターゲット状態
+		cmdList_->ResourceBarrier(1, &BarrierDesc);		//バリア指定実行
 
 		auto rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 		rtvH.ptr += bbIdx * dev_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
@@ -270,7 +270,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		BarrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		BarrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-		cmdList_->ResourceBarrier(1, &BarrierDesc);		//バリア指定実行
 		cmdList_->Close();
 
 		ID3D12CommandList* cmdlists[] = { cmdList_ };
