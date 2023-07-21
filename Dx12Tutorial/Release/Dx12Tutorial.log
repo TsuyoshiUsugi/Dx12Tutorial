@@ -1,28 +1,24 @@
-﻿2023/07/19 23:11:43 にビルドを開始しました。
+﻿2023/07/19 23:26:01 にビルドを開始しました。
 ログの詳細度は次のように設定されています: Normal。     1>ノード 2 上のプロジェクト "C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\Dx12Tutorial.vcxproj" (Build ターゲット)。
      1>InitializeBuildStatus:
          "Release\Dx12Tutorial.tlog\unsuccessfulbuild" のタッチ タスクを実行しています。
        ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\HostX86\x86\CL.exe /c /Zi /nologo /W3 /WX- /diagnostics:column /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /permissive- /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Release\\" /Fd"Release\vc142.pdb" /external:W3 /Gd /TP /analyze- /FC /errorReport:prompt main.cpp
          main.cpp
-     1>C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\main.cpp(122,68): warning C4806: '!=': 安全でない演算: 'bool' 型から 'HRESULT' 型への上位変換を行うと与えられた定数に等しくなりません
-     1>C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\main.cpp(185,24): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
-     1>C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\main.cpp(71): fatal error C1075: '{': 一致するトークンが見つかりませんでした
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\HostX86\x86\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\qesul\source\repos\DX12Tutorial\Release\Dx12Tutorial.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\qesul\source\repos\DX12Tutorial\Release\Dx12Tutorial.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG:incremental /LTCGOUT:"Release\Dx12Tutorial.iobj" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\qesul\source\repos\DX12Tutorial\Release\Dx12Tutorial.lib" /MACHINE:X86 /SAFESEH Release\main.obj
+     1>MSVCRT.lib(exe_main.obj) : error LNK2001: 外部シンボル _main は未解決です
+     1>C:\Users\qesul\source\repos\DX12Tutorial\Release\Dx12Tutorial.exe : fatal error LNK1120: 1 件の未解決の外部参照
      1>プロジェクト "C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\Dx12Tutorial.vcxproj" (Build ターゲット) のビルドが終了しました -- 失敗。
 
 ビルドに失敗しました。
 
        "C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\Dx12Tutorial.vcxproj" (Build ターゲット) (1) ->
-       (ClCompile ターゲット) -> 
-         C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\main.cpp(122,68): warning C4806: '!=': 安全でない演算: 'bool' 型から 'HRESULT' 型への上位変換を行うと与えられた定数に等しくなりません
-         C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\main.cpp(185,24): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+       (Link ターゲット) -> 
+         MSVCRT.lib(exe_main.obj) : error LNK2001: 外部シンボル _main は未解決です
+         C:\Users\qesul\source\repos\DX12Tutorial\Release\Dx12Tutorial.exe : fatal error LNK1120: 1 件の未解決の外部参照
 
+    0 個の警告
+    2 エラー
 
-       "C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\Dx12Tutorial.vcxproj" (Build ターゲット) (1) ->
-       (ClCompile ターゲット) -> 
-         C:\Users\qesul\source\repos\DX12Tutorial\Dx12Tutorial\main.cpp(71): fatal error C1075: '{': 一致するトークンが見つかりませんでした
-
-    2 個の警告
-    1 エラー
-
-経過時間 00:00:01.46
+経過時間 00:00:01.16
